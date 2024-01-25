@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<title>Car Listings</title>
+	<!-- Add Bootstrap CSS link -->
+	<link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+	<script crossorigin="anonymous" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<style>
+    .action {
+        display: flex;
+        flex-flow: row;
+        gap: 5px;
+    }
+
+    .btn-approve {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-disapprove {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-images {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-images:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        background-color: #007bff;
+        color: #fff;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .carousel-container {
+        border: 1px solid #ddd; /* Add a border for better visibility */
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 15px;
+    }
+
+    .carousel-control-prev, .carousel-control-next {
+        background-color: #007bff;
+        border-radius: 5px;
+    }
+
+    .carousel-control-prev-icon, .carousel-control-next-icon {
+        background-color: #fff;
+		/* Change the color of the carousel controls */
+		background-image: url("");
+    }
+
+    .carousel-control-prev:hover, .carousel-control-next:hover {
+        background-color: #0056b3;
+    }
+</style>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<div class="container-fluid">
+		<!-- Car Dekho Logo -->
+		<a class="navbar-brand" href="/Seller/Sell-Car">
+			<p alt="Car Dekho" class="d-inline-block align-top" height="30" src="path/to/your/logo.png">
+				Car Dekho</p>
+		</a>
+		
+		<!-- Navbar Toggler and Collapsible Content -->
+		<button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<!-- Navbar Items -->
+			<ul class="navbar-nav ms-auto">
+				<!-- Logout Button -->
+				<li class="nav-item">
+					<a class="nav-link" href="/logout">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<div class="container mt-4">
+	<h1 class="text-center mb-4">Car Listings</h1>
+	<div class="table-responsive">
+		<table class="table table-bordered table-striped">
+			<thead class="table-dark">
+			<tr>
+				<th>Seller Name</th>
+				<th>Car Brand</th>
+				<th>Registration Year</th>
+				<th>State Location</th>
+				<th>Car Owner Ship</th>
+				<th>Car Price</th>
+				<th>Description</th>
+				<th>KM Driven</th>
+				<th>Images</th>
+				<th>Status</th>
+				<th>Action</th>
+			</tr>
+			</thead>
+			<tbody>
+			<!-- Loop through the list of sellers from the controller -->
+			<tr th:each="seller : ${sellers}">
+				<td th:text="${seller.sellername}"></td>
+				<td th:text="${seller.carModelName}"></td>
+				<td th:text="${seller.registrationYear}"></td>
+				<td th:text="${seller.stateLocation}"></td>
+				<td th:text="${seller.carOwnerShip}"></td>
+				<td th:text="${seller.carPrice}"></td>
+				<td th:text="${seller.description}"></td>
+				<td th:text="${seller.KMDriven}"></td>
+				<td>
+					<!-- Button trigger modal -->
+					<button class="btn btn-images" data-bs-target="#imageModal" data-bs-toggle="modal" type="button">
+						View
+					</button>
+					
+					<!-- Modal -->
+					<div aria-hidden="true" aria-labelledby="imageModalLabel" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="imageModal" tabindex="-1">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h1 class="modal-title fs-5 text-white" id="imageModalLabel">Photos</h1>
+									<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+								</div>
+								<div class="modal-body">
+									<div class="carousel-container">
+										<div class="carousel slide" data-bs-ride="carousel" id="imageCarousel">
+											<div class="carousel-inner">
+												<!-- Iterate through the images and create carousel items -->
+												<div th:classappend="${imageIndex.index == 0} ? 'carousel-item active' : 'carousel-item'"
+													 th:each="image, imageIndex : ${seller.photos}">
+													<img alt="Car Image" class="d-block w-100"
+														 style="object-fit: cover; height: 400px;"
+														 th:src="@{/admit/products/{productId}/images/{imageIndex}(productId=${seller.id}, imageIndex=${imageIndex.index})}">
+												</div>
+											</div>
+											<!-- Carousel Controls -->
+											<button class="carousel-control-prev" data-bs-slide="prev" data-bs-target="#imageCarousel" type="button">
+												<i class="fas fa-chevron-left"></i>
+											</button>
+											<button class="carousel-control-next" data-bs-slide="next" data-bs-target="#imageCarousel" type="button">
+												<i class="fas fa-chevron-right"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+									<button class="btn btn-primary" type="button">Understood</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</td>
+				<!-- Status cell -->
+				<td class="text-success" th:if="${seller.status == 'Approved'}">Approved</td>
+				<td class="text-danger" th:if="${seller.status == 'Disapproved'}">Disapproved</td>
+				<td th:if="${seller.status != 'Approved' and seller.status != 'Disapproved'}">Pending</td>
+				
+				<td>
+					<div class="action">
+						<a class="btn btn-approve" th:href="@{/Admin/Approval/{id}(id=${seller.id})}">Approve</a>
+						<a class="btn btn-disapprove" th:href="@{/Admin/Disapproval/{id}(id=${seller.id})}">Disapprove</a>
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+twilio:
+  account_sid: AC2315bcf242f15566da8033df4c5da5d2
+  auth_token: afd5a064161e210056d8099f90435ce8
+  from_number: "+13155875258"
+
